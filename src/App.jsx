@@ -9,8 +9,10 @@ import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import Policies from './pages/Policies';
 import CartDrawer from './components/CartDrawer';
+import Toast from './components/Toast';
 import { CartProvider } from './context/CartContext';
 import './index.css';
+import './App.css';
 
 function App() {
   return (
@@ -19,7 +21,8 @@ function App() {
         <div className="app">
           <Header />
           <CartDrawer />
-          
+          <Toast />
+
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />

@@ -1,35 +1,77 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;600;700&display=swap');
 
 :root {
-  --font-family: 'Poppins', sans-serif;
-  
-  --color-primary: #232323;
-  --color-secondary: #e95144; /* Sale/Red color */
+  --font-primary: 'Inter', sans-serif;
+  --font-display: 'Playfair Display', serif;
+
+  /* Brand Colors */
+  --color-primary: #1a1a1a;
+  --color-secondary: #c0392b;
+  --color-accent: #c6973f;
+  --color-accent-light: #e8c77a;
+
+  /* Background & Surface */
   --color-background: #ffffff;
-  --color-text-main: #232323;
-  --color-text-muted: #969696;
-  --color-border: #e6e6e6;
-  --color-gray-bg: #f8f8f8;
+  --color-surface: #fafafa;
+  --color-gray-bg: #f5f4f2;
+  --color-gray-mid: #eeece9;
   --color-white: #ffffff;
-  
-  --max-width: 1200px;
+
+  /* Text */
+  --color-text-main: #1a1a1a;
+  --color-text-muted: #888888;
+  --color-text-light: #aaaaaa;
+
+  /* Border */
+  --color-border: #e8e6e2;
+  --color-border-dark: #d4d0cb;
+
+  /* Gradients */
+  --gradient-dark: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  --gradient-accent: linear-gradient(135deg, #c6973f 0%, #e8c77a 100%);
+  --gradient-hero: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 100%);
+  --gradient-card: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.15);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.2);
+
+  /* Layout */
+  --max-width: 1280px;
+  --max-width-narrow: 960px;
   --header-height: 80px;
-  
+
+  /* Transitions */
   --transition-speed: 0.3s;
+  --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-* {
+/* ─── Reset ─────────────────────────────────────── */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: var(--font-family);
+  font-family: var(--font-primary);
   background-color: var(--color-background);
   color: var(--color-text-main);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 a {
@@ -48,68 +90,206 @@ button {
   background: none;
 }
 
+/* ─── Layout Utilities ───────────────────────────── */
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
-/* Common utilities */
+.section {
+  padding: 80px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-accent);
+  margin-bottom: 12px;
+}
+
+.section-heading {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 48px;
+  line-height: 1.2;
+}
+
+/* ─── Flex Utilities ─────────────────────────────── */
 .flex { display: flex; }
 .flex-col { flex-direction: column; }
 .items-center { align-items: center; }
 .justify-between { justify-content: space-between; }
 .justify-center { justify-content: center; }
+.justify-start { justify-content: flex-start; }
+.gap-2 { gap: 0.5rem; }
 .gap-4 { gap: 1rem; }
 .gap-8 { gap: 2rem; }
 
-.section {
-  padding: 60px 0;
-}
-
-.section-title {
-  text-align: center;
-  font-size: 24px;
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  letter-spacing: 0.05em;
-}
-
-.btn-primary {
-  display: inline-block;
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  transition: all var(--transition-speed);
-  border: 1px solid var(--color-primary);
-}
-
-.btn-primary:hover {
-  background-color: var(--color-white);
-  color: var(--color-primary);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-/* Extra utilities */
+/* ─── Spacing Utilities ──────────────────────────── */
 .mt-4 { margin-top: 1rem; }
 .mt-8 { margin-top: 2rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-8 { margin-bottom: 2rem; }
-.gap-2 { gap: 0.5rem; }
+
+/* ─── Text Utilities ─────────────────────────────── */
 .text-center { text-align: center; }
 .text-muted { color: var(--color-text-muted); }
 .text-primary { color: var(--color-primary); }
-.justify-start { justify-content: flex-start; }
+.text-accent { color: var(--color-accent); }
+
+/* ─── Button System ──────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 14px 32px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 2px solid var(--color-primary);
+  transition: all var(--transition-speed) var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-accent);
+  opacity: 0;
+  transition: opacity var(--transition-speed);
+}
+
+.btn-primary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary span, .btn-primary > * {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: transparent;
+  color: var(--color-white);
+  padding: 14px 32px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 2px solid rgba(255,255,255,0.7);
+  transition: all var(--transition-speed);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border-color: var(--color-white);
+}
+
+/* ─── Breadcrumb ─────────────────────────────────── */
+.breadcrumb {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.breadcrumb a:hover {
+  color: var(--color-accent);
+}
+
+.breadcrumb .current {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ─── Animations ─────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.3); opacity: 0.7; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s var(--transition-smooth) both;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.5s var(--transition-smooth) both;
+}
+
+/* ─── Scroll Reveal ──────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s var(--transition-smooth), transform 0.7s var(--transition-smooth);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Loading Skeleton ───────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ─── Badge ──────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bg-light {
+  background-color: var(--color-gray-bg);
+}
