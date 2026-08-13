@@ -1,0 +1,144 @@
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 1;
+  animation: fadeIn 0.3s ease;
+}
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  background-color: var(--color-background);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.cart-drawer.open {
+  transform: translateX(0);
+}
+
+.cart-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cart-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.empty-cart {
+  height: 100%;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.cart-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  background-color: var(--color-gray-bg);
+}
+
+.cart-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item-details h4 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--color-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cart-item-price {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: auto;
+}
+
+.remove-item {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+}
+
+.remove-item:hover {
+  color: var(--color-primary);
+}
+
+.quantity-controls.small {
+  height: 30px;
+}
+
+.quantity-controls.small button {
+  width: 30px;
+}
+
+.quantity-controls.small input {
+  width: 40px;
+  font-size: 14px;
+}
+
+.cart-footer {
+  padding: 20px;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-gray-bg);
+}
+
+.cart-subtotal {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.tax-note {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.w-100 {
+  width: 100%;
+}
