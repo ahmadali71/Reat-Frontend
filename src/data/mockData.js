@@ -182,6 +182,10 @@ export const MOCK_PRODUCTS = [
   }
 ];
 
+export const heroKitchenwareVideo = 'https://assets.mixkit.co/videos/41584/41584-720.mp4';
+export const heroHomeDecorVideo = 'https://assets.mixkit.co/videos/43529/43529-720.mp4';
+export const heroSaleVideo = 'https://assets.mixkit.co/videos/42885/42885-720.mp4';
+
 export {
   heroKitchenware,
   heroHomeDecor,
@@ -195,3 +199,4 @@ export {
   wallPlanters,
   oilDispenser
 };
+

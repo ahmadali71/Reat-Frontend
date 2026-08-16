@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck,
   Truck,
@@ -11,7 +12,11 @@ import {
   ArrowRight,
   Sparkles,
   Flame,
-  Check
+  Check,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import {
@@ -19,14 +24,15 @@ import {
   heroKitchenware,
   heroHomeDecor,
   heroSale,
+  heroKitchenwareVideo,
+  heroHomeDecorVideo,
+  heroSaleVideo,
   cookwareSet,
   cutlerySet,
   spiceJars,
   foodChopper,
   diningMats,
-  utensilsSet,
-  wallPlanters,
-  oilDispenser
+  wallPlanters
 } from '../data/mockData';
 import './Home.css';
 
@@ -38,14 +44,74 @@ const InstagramIcon = ({ size = 24 }) => (
   </svg>
 );
 
+const heroContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08
+    }
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+    filter: 'blur(6px)',
+    transition: {
+      duration: 0.35,
+      ease: [0.4, 0, 1, 1]
+    }
+  }
+};
+
+const heroEyebrowVariants = {
+  hidden: { opacity: 0, y: -20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
+const heroItemVariants = {
+  hidden: { opacity: 0, y: 32, filter: 'blur(8px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.75,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
+const heroButtonVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
 const Home = () => {
   const featuredProducts = MOCK_PRODUCTS.slice(0, 4);
   const newArrivals = MOCK_PRODUCTS.filter(p => p.isNew).slice(0, 4);
-  const saleProducts = MOCK_PRODUCTS.filter(p => p.isSale).slice(0, 4);
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
   const [timeLeft, setTimeLeft] = useState({ hours: 14, minutes: 42, seconds: 18 });
   const revealRefs = useRef([]);
+  const videoRefs = useRef([]);
 
   // Live countdown timer for the Mega Sale
   useEffect(() => {
@@ -62,6 +128,8 @@ const Home = () => {
 
   const heroSlides = [
     {
+      id: 'kitchenware',
+      video: heroKitchenwareVideo,
       image: heroKitchenware,
       eyebrow: 'Artisanal Collection 2026',
       title: ['LUXURY', 'COOKWARE'],
@@ -72,6 +140,8 @@ const Home = () => {
       highlightTag: 'Flagship Edition'
     },
     {
+      id: 'homedecor',
+      video: heroHomeDecorVideo,
       image: heroHomeDecor,
       eyebrow: 'Modern Aesthetics',
       title: ['ELEVATE', 'YOUR HOME'],
@@ -82,6 +152,8 @@ const Home = () => {
       highlightTag: 'Curated Living'
     },
     {
+      id: 'sale',
+      video: heroSaleVideo,
       image: heroSale,
       eyebrow: 'Limited Flash Sale',
       title: ['UP TO 50% OFF', 'MEGA SALE'],
@@ -128,13 +200,31 @@ const Home = () => {
     }
   ];
 
-  // Auto slide
+  // Sync background video elements with active slide and playback state
   useEffect(() => {
+    videoRefs.current.forEach((vid, idx) => {
+      if (vid) {
+        vid.muted = isMuted;
+        if (idx === currentSlide && isPlaying) {
+          const playPromise = vid.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
+        } else {
+          vid.pause();
+        }
+      }
+    });
+  }, [currentSlide, isPlaying, isMuted]);
+
+  // Auto slide timer
+  useEffect(() => {
+    if (!isPlaying) return;
     const timer = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % heroSlides.length);
-    }, 6000);
+    }, 7500);
     return () => clearInterval(timer);
-  }, [heroSlides.length]);
+  }, [isPlaying, heroSlides.length]);
 
   // Scroll reveal observer
   useEffect(() => {
@@ -158,68 +248,131 @@ const Home = () => {
   return (
     <div className="home-page">
 
-      {/* ── 1. Hero Slider ───────────────────────────── */}
+      {/* ── 1. Hero Section with Fixed Background Video & Framer Motion Text ── */}
       <section className="hero" aria-label="Featured promotions">
-        <div className="hero-slides">
+        
+        {/* Fixed / Parallax Cinematic Video Backdrop */}
+        <div className="hero-fixed-media-container">
           {heroSlides.map((slide, i) => (
             <div
-              key={i}
-              className={`hero-slide${i === currentSlide ? ' active' : ''}${slide.align === 'left' ? ' align-left' : ''}`}
-              style={{ backgroundImage: `url('${slide.image}')` }}
+              key={slide.id}
+              className={`hero-fixed-media-slide ${i === currentSlide ? 'active' : ''}`}
             >
-              <div className="hero-overlay" />
-              <div className="container">
-                <div className={`hero-content${i === currentSlide ? ' is-active' : ''}`}>
-                  <div className="hero-eyebrow-row">
-                    <span className="hero-eyebrow">{slide.eyebrow}</span>
-                    <span className="hero-tag-badge">{slide.highlightTag}</span>
-                  </div>
-
-                  <h1>
-                    {slide.title[0]}<br />
-                    <span className="hero-title-accent">{slide.title[1]}</span>
-                  </h1>
-
-                  <p>{slide.subtitle}</p>
-
-                  {/* Countdown for Sale Slide */}
-                  {slide.isSaleSlide && (
-                    <div className="hero-countdown-box">
-                      <span className="countdown-label">Offers Expiring In:</span>
-                      <div className="countdown-digits">
-                        <div className="countdown-unit">
-                          <span>{String(timeLeft.hours).padStart(2, '0')}</span>
-                          <small>HRS</small>
-                        </div>
-                        <span className="colon">:</span>
-                        <div className="countdown-unit">
-                          <span>{String(timeLeft.minutes).padStart(2, '0')}</span>
-                          <small>MIN</small>
-                        </div>
-                        <span className="colon">:</span>
-                        <div className="countdown-unit">
-                          <span>{String(timeLeft.seconds).padStart(2, '0')}</span>
-                          <small>SEC</small>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="hero-cta-group">
-                    <Link to={slide.link} className="btn-primary">
-                      {slide.cta} <ArrowRight size={16} />
-                    </Link>
-                    <Link to="/collections/all" className="btn-outline">
-                      Browse All ({MOCK_PRODUCTS.length})
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <video
+                ref={el => (videoRefs.current[i] = el)}
+                className="hero-background-video"
+                src={slide.video}
+                poster={slide.image}
+                autoPlay
+                muted={isMuted}
+                loop
+                playsInline
+                preload="auto"
+              />
+              <div
+                className="hero-fallback-bg"
+                style={{ backgroundImage: `url('${slide.image}')` }}
+              />
             </div>
           ))}
+
+          {/* Cinematic lighting and dark luxury overlays */}
+          <div className="hero-cinematic-overlay" />
+          <div className="hero-vignette" />
+          <div className="hero-ambient-glow" />
         </div>
 
-        {/* Slide Controls */}
+        {/* Framer Motion Choreographed Text Content */}
+        <div className="container hero-container">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              className={`hero-content ${heroSlides[currentSlide].align === 'left' ? 'align-left' : ''}`}
+              variants={heroContainerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              {/* Eyebrow and Tag Badge */}
+              <motion.div variants={heroEyebrowVariants} className="hero-eyebrow-row">
+                <span className="hero-eyebrow">
+                  <Sparkles size={13} className="sparkle-icon" /> {heroSlides[currentSlide].eyebrow}
+                </span>
+                <span className="hero-tag-badge">{heroSlides[currentSlide].highlightTag}</span>
+              </motion.div>
+
+              {/* Main Headline */}
+              <motion.h1 variants={heroItemVariants} className="hero-main-title">
+                <span className="hero-title-line-1">{heroSlides[currentSlide].title[0]}</span>
+                <br />
+                <span className="hero-title-accent">{heroSlides[currentSlide].title[1]}</span>
+              </motion.h1>
+
+              {/* Subtitle Description */}
+              <motion.p variants={heroItemVariants} className="hero-description">
+                {heroSlides[currentSlide].subtitle}
+              </motion.p>
+
+              {/* Countdown Timer for Flash Sale Slide */}
+              {heroSlides[currentSlide].isSaleSlide && (
+                <motion.div
+                  variants={heroItemVariants}
+                  className="hero-countdown-box"
+                  initial={{ opacity: 0, scale: 0.92, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="countdown-header">
+                    <Flame size={15} className="flame-icon" />
+                    <span className="countdown-label">Offers Expiring In:</span>
+                  </div>
+                  <div className="countdown-digits">
+                    <div className="countdown-unit">
+                      <span>{String(timeLeft.hours).padStart(2, '0')}</span>
+                      <small>HRS</small>
+                    </div>
+                    <span className="colon">:</span>
+                    <div className="countdown-unit">
+                      <span>{String(timeLeft.minutes).padStart(2, '0')}</span>
+                      <small>MIN</small>
+                    </div>
+                    <span className="colon">:</span>
+                    <div className="countdown-unit">
+                      <span>{String(timeLeft.seconds).padStart(2, '0')}</span>
+                      <small>SEC</small>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Interactive CTA Buttons */}
+              <motion.div variants={heroButtonVariants} className="hero-cta-group">
+                <motion.div
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="motion-btn-wrap"
+                >
+                  <Link to={heroSlides[currentSlide].link} className="btn-primary hero-btn-main">
+                    <span>{heroSlides[currentSlide].cta}</span>
+                    <ArrowRight size={16} />
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="motion-btn-wrap"
+                >
+                  <Link to="/collections/all" className="btn-outline hero-btn-glass">
+                    Browse All ({MOCK_PRODUCTS.length})
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Slide Navigation Arrows */}
         <button className="hero-arrow hero-arrow-prev" onClick={prevSlide} aria-label="Previous slide">
           <ChevronLeft size={24} />
         </button>
@@ -227,6 +380,7 @@ const Home = () => {
           <ChevronRight size={24} />
         </button>
 
+        {/* Slide Navigation Dots */}
         <div className="hero-nav" role="tablist">
           {heroSlides.map((_, i) => (
             <button
@@ -235,12 +389,50 @@ const Home = () => {
               aria-selected={i === currentSlide}
               className={`hero-dot${i === currentSlide ? ' active' : ''}`}
               onClick={() => setCurrentSlide(i)}
-            />
+            >
+              {i === currentSlide && (
+                <motion.div
+                  layoutId="activeSlidePill"
+                  className="hero-dot-active-pill"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
           ))}
         </div>
 
+        {/* Video Playback & Audio Controls Floating Pill */}
+        <div className="hero-media-controls">
+          <button
+            className="hero-control-btn"
+            onClick={() => setIsPlaying(p => !p)}
+            aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
+            title={isPlaying ? 'Pause Background Video' : 'Play Background Video'}
+          >
+            {isPlaying ? <Pause size={13} /> : <Play size={13} />}
+            <span className="control-label">{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+          </button>
+          <div className="control-divider" />
+          <button
+            className="hero-control-btn"
+            onClick={() => setIsMuted(m => !m)}
+            aria-label={isMuted ? 'Unmute video audio' : 'Mute video audio'}
+            title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+          >
+            {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} />}
+            <span className="control-label">{isMuted ? 'MUTED' : 'SOUND'}</span>
+          </button>
+        </div>
+
+        {/* Progress Bar Indicator */}
         <div className="hero-progress">
-          <div key={currentSlide} className="hero-progress-bar" />
+          <motion.div
+            key={`${currentSlide}-${isPlaying}`}
+            className="hero-progress-bar"
+            initial={{ width: '0%' }}
+            animate={{ width: isPlaying ? '100%' : '0%' }}
+            transition={{ duration: 7.5, ease: 'linear' }}
+          />
         </div>
       </section>
 
